@@ -1,6 +1,6 @@
 {
   "name": "jbx.be",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,5 +11,8 @@
   "dependencies": {
     "dnsd": "^0.9.6",
     "ee-log": "^1.0.1"
+  },
+  "bin": {
+    "dnsporn": "index.js"
   }
 }
