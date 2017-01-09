@@ -67,12 +67,12 @@
 		handleRequest(request, response) {
 			try {
 				request.question.forEach((question) => {
-					const respond = (answer) => {
+					const respond = (answer, ttl) => {
 						response.answer.push({
 							  name	: question.name
 							, type 	: question.type
 							, class : question.class
-							, ttl 	: 60
+							, ttl 	: ttl || 60
 							, data 	: answer
 						});
 					};
@@ -81,7 +81,7 @@
 					if (question.class === 'IN') {
 
 						switch (question.type) {
-							case 'a':
+							case 'A':
 								this.handleARequest(question, respond);
 								break;
 
@@ -147,14 +147,14 @@
 					case 'l':
 					case 'local':
 					case 'localhost':
-						respond('127.0.0.1');
+						respond('127.0.0.1', 3600*24);
 						break;
 
 
 					default:
 						const ipRegexp = /(\d+\.\d+\.\d+\.\d+)/gi.exec(name);
 						if (ipRegexp && ipRegexp.length === 2 && ipRegexp[1].length && net.isIP(ipRegexp[1])) {
-							respond(ipRegexp[1]);
+							respond(ipRegexp[1], 3600*24);
 						}
 						break;
 				}
