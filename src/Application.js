@@ -54,6 +54,8 @@
 
 			this.server = dns.createServer(this.handleRequest.bind(this));
 			this.server.listen(this.port);
+
+			this.server.on('error', log);
 		}
 
 
@@ -76,32 +78,20 @@
 					};
 
 
-					if (question.class === 'IN' && question.type === 'A') {
+					if (question.class === 'IN') {
 
-						// parse dns parts
-						this.regexp.lastIndex = 0;
-						const parts = this.regexp.exec(question.name);
+						switch (question.type) {
+							case 'a':
+								this.handleARequest(question, respond);
+								break;
 
+							case 'NS':
+								this.handleNSRequest(question, respond);
+								break;
 
-						if (parts && parts.length === 2 && parts[1].length) {
-							const name = parts[1];
-
-							// nice, there is something usable
-							switch (name) {
-								case 'l':
-								case 'local':
-								case 'localhost':
-									respond('127.0.0.1');
-									break;
-
-
-								default:
-									const ipRegexp = /(\d+\.\d+\.\d+\.\d+)/gi.exec(name);
-									if (ipRegexp && ipRegexp.length === 2 && ipRegexp[1].length && net.isIP(ipRegexp[1])) {
-										respond(ipRegexp[1]);
-									}
-									break;
-							}
+							case 'SOA':
+								this.handleSOARequest(question, respond);
+								break;
 						}
 					}
 				});
@@ -110,6 +100,65 @@
 			}
 
 			response.end();
+		}
+
+
+
+
+
+		handleNSRequest(question, respond) {
+			respond('dns.dnsporn.joinbox.com');
+			respond('dns.dnsporn.joinbox.ch');
+		}
+
+
+
+
+
+		handleSOARequest(question, respond) {
+			respond({
+				  mname: 'dns.dnsporn.joinbox.com.'
+				, rname:'hosting.joinbox.com.'
+				, serial: 1483995988
+				, refresh: 86400
+				, retry: 7200
+				, expire: 604800
+				, ttl: 604800
+			});
+		}
+
+
+
+
+
+		handleARequest(question, respond) {
+
+
+			// parse dns parts
+			this.regexp.lastIndex = 0;
+			const parts = this.regexp.exec(question.name);
+
+
+			if (parts && parts.length === 2 && parts[1].length) {
+				const name = parts[1];
+
+				// nice, there is something usable
+				switch (name) {
+					case 'l':
+					case 'local':
+					case 'localhost':
+						respond('127.0.0.1');
+						break;
+
+
+					default:
+						const ipRegexp = /(\d+\.\d+\.\d+\.\d+)/gi.exec(name);
+						if (ipRegexp && ipRegexp.length === 2 && ipRegexp[1].length && net.isIP(ipRegexp[1])) {
+							respond(ipRegexp[1]);
+						}
+						break;
+				}
+			}
 		}
 	};
 })();
