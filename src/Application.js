@@ -49,7 +49,7 @@
 
 			// the regexp to use to parse the queries
 			if (this.domain === null) this.regexp = /^(.+)\..+\..+$/gi;
-			else this.regexp = new RegExp(`^(.+)\\.${this.domain.replace('.', '\\.')}$`, 'gi')
+			else this.regexp = new RegExp(`^(.+)\\.${this.domain.replace('.', '\\.')}$`, 'gi');
 
 
 			this.server = dns.createServer(this.handleRequest.bind(this));
@@ -156,6 +156,10 @@
 						if (ipRegexp && ipRegexp.length === 2 && ipRegexp[1].length && net.isIP(ipRegexp[1])) {
 							respond(ipRegexp[1], 3600*24);
 						}
+						else if(/^(.+\.)?(?:l|local|localhost)$/gi.test(name)) {
+							respond('127.0.0.1', 3600*24);
+						}
+
 						break;
 				}
 			}
