@@ -1,18 +1,15 @@
 {
   "name": "jbx.be",
-  "version": "1.0.4",
-  "description": "",
-  "main": "index.js",
+  "version": "1.1.0",
+  "description": "A simple dynamic DNS resolver",
+  "main": "index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "app": "node --experimental-modules --no-warnings index.mjs --port=9000"
   },
-  "author": "",
+  "author": "Lina van der Weg <lina@vanderweg.ch>",
   "license": "ISC",
   "dependencies": {
     "dnsd": "^0.9.6",
-    "ee-log": "^1.0.1"
-  },
-  "bin": {
-    "dnsporn": "index.js"
+    "ee-log": "^3.0.8"
   }
 }
