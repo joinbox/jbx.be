@@ -232,7 +232,7 @@ export default class DNSServer {
 	 *
 	 * @param      {Object}    question  the dns question
 	 */
-	async handleARequest(question) {
+	async handleCNAMERequest(question) {
 
 
 		// look, how ugly this is :D
