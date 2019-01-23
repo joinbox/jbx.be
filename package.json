@@ -1,6 +1,6 @@
 {
   "name": "jbx.be",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A simple dynamic DNS resolver",
   "main": "index.mjs",
   "scripts": {
@@ -13,3 +13,4 @@
     "ee-log": "^3.0.8"
   }
 }
+

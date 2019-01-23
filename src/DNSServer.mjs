@@ -168,10 +168,20 @@ export default class DNSServer {
 
 
 		// look, how ugly this is :D
-		if (question.name === 'jbx.be' || question.name === 'www.jbx.be') {
+		if (question.name === 'jbx.be') {
 
 			// resolve the cname to our s3 bucket, return it as a record
 			const bucket = 'jbx.be.s3-website-eu-west-1.amazonaws.com';
+			const ips = await this.resolve(bucket);
+
+			return ips.map(ip => ({
+				value: ip,
+				ttl: 300,
+			}));
+		} else if (question.name === 'www.jbx.be') {
+
+			// resolve the cname to our s3 bucket, return it as a record
+			const bucket = 'www.jbx.be.s3-website-eu-west-1.amazonaws.com';
 			const ips = await this.resolve(bucket);
 
 			return ips.map(ip => ({
