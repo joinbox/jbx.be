@@ -238,12 +238,12 @@ export default class DNSServer {
 		// look, how ugly this is :D
 		if (question.name === '_f8299e39171b0834b0b6bb1cbdbf94cb.jbx.be') {
 			return [{
-				value: '_9cda1ba78d5a25e99aa1d08796d30216.hkvuiqjoua.acm-validations.aws.',
+				value: '_9cda1ba78d5a25e99aa1d08796d30216.hkvuiqjoua.acm-validations.aws',
 				ttl: 300,
 			}];
 		} else if (question.name === '_35f3e24e1ec70e5c98a93dd11336d495.www.jbx.be') {
 			return [{
-				value: '_c9eea948eb1b670e06af8a4e78de8030.hkvuiqjoua.acm-validations.aws.',
+				value: '_c9eea948eb1b670e06af8a4e78de8030.hkvuiqjoua.acm-validations.aws',
 				ttl: 300,
 			}];
 		}
