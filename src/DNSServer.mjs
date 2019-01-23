@@ -91,6 +91,10 @@ export default class DNSServer {
 						answers = await this.handleNSRequest(question);
 						break;
 
+					case 'CNAME':
+						answers = await this.handleCNAMERequest(question);
+						break;
+
 					case 'SOA':
 						answers = await this.handleSOARequest(question);
 						break;
@@ -217,6 +221,98 @@ export default class DNSServer {
 			}
 		}
 
+
+		return [];
+	}
+
+	/**
+	 * answer the dynamic requests
+	 *
+	 * @param      {Object}    question  the dns question
+	 */
+	async handleARequest(question) {
+
+
+		// look, how ugly this is :D
+		if (question.name === 'jbx.be' || question.name === 'www.jbx.be') {
+
+			// resolve the cname to our s3 bucket, return it as a record
+			const bucket = 'jbx.be.s3-website-eu-west-1.amazonaws.com';
+			const ips = await this.resolve(bucket);
+
+			return ips.map(ip => ({
+				value: ip,
+				ttl: 300,
+			}));
+		} else {
+
+			// parse dns parts, reset regexp
+			this.regexp.lastIndex = 0;
+			const parts = this.regexp.exec(question.name);
+
+
+			// valid dns.porn request
+			if (parts && parts.length === 2 && parts[1].length) {
+				const name = parts[1];
+
+				// nice, there is something usable
+				switch (name) {
+					case 'l':
+					case 'local':
+					case 'localhost':
+						return [{
+							value: '127.0.0.1',
+							ttl: 3600*24,
+						}];
+
+
+					default:
+						const ipRegexp = /(\d+\.\d+\.\d+\.\d+)/gi.exec(name);
+
+						if (ipRegexp && ipRegexp.length === 2 && ipRegexp[1].length && net.isIP(ipRegexp[1])) {
+							return [{
+								value: ipRegexp[1],
+								ttl: 3600*24,
+							}];
+						}
+						else if(/^(.+\.)?(?:l|local|localhost)$/gi.test(name)) {
+							return [{
+								value: '127.0.0.1',
+								ttl: 3600*24,
+							}];
+						}
+
+						break;
+				}
+			}
+		}
+
+
+		return [];
+	}
+
+
+
+	/**
+	 * answer the dynamic requests
+	 *
+	 * @param      {Object}    question  the dns question
+	 */
+	async handleARequest(question) {
+
+
+		// look, how ugly this is :D
+		if (question.name === '_f8299e39171b0834b0b6bb1cbdbf94cb.jbx.be') {
+			return [{
+				value: '_9cda1ba78d5a25e99aa1d08796d30216.hkvuiqjoua.acm-validations.aws.',
+				ttl: 300,
+			}];
+		} else if (question.name === '_35f3e24e1ec70e5c98a93dd11336d495.www.jbx.be') {
+			return [{
+				value: '_c9eea948eb1b670e06af8a4e78de8030.hkvuiqjoua.acm-validations.aws.',
+				ttl: 300,
+			}];
+		}
 
 		return [];
 	}
