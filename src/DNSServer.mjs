@@ -164,7 +164,7 @@ export default class DNSServer {
 
 
 		// look, how ugly this is :D
-		if (question.name === 'jbx.be') {
+		if (question.name === 'jbx.be' || question.name === 'www.jbx.be') {
 
 			// resolve the cname to our s3 bucket, return it as a record
 			const bucket = 'jbx.be.s3-website-eu-west-1.amazonaws.com';
